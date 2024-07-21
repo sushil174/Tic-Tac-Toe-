@@ -44,14 +44,14 @@ const gameBoard = (function () {
 
 function player (name,type,win) {
     
-    return {win,name,type,update}
+    return {win,name,type}
 }
 
 
 
 const game = (function() {
-    const player1 = player("w","O",0);
-    const player2 = player("we","X",0);
+    const player1 = player("player1","O",0);
+    const player2 = player("player2","X",0);
     let turn = true;
 
     const playing = (player,index) => {
@@ -102,6 +102,10 @@ const game = (function() {
 
 const dom = (function() {
     let cells = [];
+    const playerOne = prompt("Enter first name");
+    const playerTwo = prompt("Enter second name");
+    game.player1.name = playerOne;
+    game.player2.name = playerTwo;
     const p1 = document.createElement("h1");
     p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
     const body = document.body;
@@ -129,13 +133,12 @@ const dom = (function() {
                     const winner = game.gameWinner();
                     if(winner !== undefined) {
                         winner.win += 1;
-                        current.textContent = winner.type + " won !!!!";
-          
+                        current.textContent = winner.name + " won !!!!";
+                        p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
                         restart();
                     }
                     else if(gameBoard.isFull()){
                         current.textContent = "no cells";
-                        
                         restart();
                     }
                 }   
@@ -161,6 +164,7 @@ const dom = (function() {
         p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
     }
 
+    render()
     return {render,display,restart,cells}
 
 })();

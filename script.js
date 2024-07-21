@@ -41,19 +41,17 @@ const gameBoard = (function () {
     return {board,display,set,check,isFull,resetBoard}
 })();
 
-const player = function(type) {
-    this.type = type;
-    this.win = 0;
-    const updateWin = () => {
-        this.win += 1;
-    }
-    return {win,updateWin,type}
+
+function player (name,type,win) {
+    
+    return {win,name,type,update}
 }
 
 
+
 const game = (function() {
-    const player1 = player("O");
-    const player2 = player("X");
+    const player1 = player("w","O",0);
+    const player2 = player("we","X",0);
     let turn = true;
 
     const playing = (player,index) => {
@@ -98,14 +96,16 @@ const game = (function() {
         else return player2;
     }
 
-    return {nowPlaying,Play,gameWinner,isOver}
+    return {player1,player2,nowPlaying,Play,gameWinner,isOver}
 })();
-
 
 
 const dom = (function() {
     let cells = [];
+    const p1 = document.createElement("h1");
+    p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
     const body = document.body;
+    body.append(p1);
     const container = document.createElement('div');
     container.classList.add("container");
     const button = document.createElement("button");
@@ -128,6 +128,7 @@ const dom = (function() {
                     display();
                     const winner = game.gameWinner();
                     if(winner !== undefined) {
+                        winner.win += 1;
                         current.textContent = winner.type + " won !!!!";
           
                         restart();
@@ -157,8 +158,10 @@ const dom = (function() {
             cells[i].textContent = gameBoard.board[i];
         }
         current.textContent = game.nowPlaying().type;
+        p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
     }
 
     return {render,display,restart,cells}
 
 })();
+

@@ -1,0 +1,10 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(3 ,1fr);
+    grid-template-rows: repeat(3,1fr);
+    gap: 3em;
+    width: clamp(500px, 60%, 80%);
+    border: 1px solid pink;
+    justify-items: center;
+    padding: 5em 2em;
+}

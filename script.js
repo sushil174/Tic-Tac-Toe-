@@ -1,5 +1,5 @@
 const gameBoard = (function () {
-    const board = [];
+    let board = [];
     const display = () => {
         console.log(board);
     }
@@ -9,6 +9,10 @@ const gameBoard = (function () {
             return true
         }
         return false
+    }
+
+    const resetBoard = () => {
+        board.length = 0;
     }
 
     const check = (player) => {
@@ -34,12 +38,16 @@ const gameBoard = (function () {
         return true
     }
 
-    return {board,display,set,check,isFull}
+    return {board,display,set,check,isFull,resetBoard}
 })();
 
 const player = function(type) {
     this.type = type;
-    return {type}
+    this.win = 0;
+    const updateWin = () => {
+        this.win += 1;
+    }
+    return {win,updateWin,type}
 }
 
 
@@ -53,8 +61,7 @@ const game = (function() {
     }
 
     const Play = function(index) {
-        console.log("Starting game")
-                  
+              
         if(turn){
             if (playing(player1,index)) {
                 turn = !turn
@@ -79,6 +86,7 @@ const game = (function() {
 
     const isOver = () => {
         if(gameBoard.isFull() || gameBoard.check(player1) || gameBoard.check(player2)) {
+            turn = !turn;
             return true;
         }
         return false;
@@ -89,18 +97,24 @@ const game = (function() {
         if(turn) {return player1}
         else return player2;
     }
+
     return {nowPlaying,Play,gameWinner,isOver}
 })();
 
 
 
 const dom = (function() {
-    const cells = [];
+    let cells = [];
     const body = document.body;
     const container = document.createElement('div');
     container.classList.add("container");
+    const button = document.createElement("button");
+    body.append(button);
+    button.textContent = "Restart";
     const current = document.createElement('h1');
     const render = () => {
+        current.textContent  = game.nowPlaying().type;
+        body.append(current);
         for(let i=0;i<9;i++){
             const cell = document.createElement('div');
             cell.classList.add("cell");
@@ -115,13 +129,27 @@ const dom = (function() {
                     const winner = game.gameWinner();
                     if(winner !== undefined) {
                         current.textContent = winner.type + " won !!!!";
+          
+                        restart();
                     }
-                }else {
-                    current.textContent = "no more cell to fill"
-                }     
+                    else if(gameBoard.isFull()){
+                        current.textContent = "no cells";
+                        
+                        restart();
+                    }
+                }   
             })
         }
         body.append(container)
+    }
+
+    const restart = () => {
+        button.setAttribute("style", "background-color:green")
+        button.addEventListener("click",(e) => {
+            gameBoard.resetBoard();
+            display()
+            button.setAttribute("style", "background-color:grey")  
+        })
     }
 
     const display = () => {
@@ -129,10 +157,8 @@ const dom = (function() {
             cells[i].textContent = gameBoard.board[i];
         }
         current.textContent = game.nowPlaying().type;
-        console.log(current.textContent)
-        body.append(current)
     }
 
-    return {render,display}
+    return {render,display,restart,cells}
 
 })();

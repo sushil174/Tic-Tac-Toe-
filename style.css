@@ -8,3 +8,8 @@
     justify-items: center;
     padding: 5em 2em;
 }
+
+.cell {
+    padding: 1em;
+    border: 1px solid red;
+}

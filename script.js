@@ -1,5 +1,5 @@
 const gameBoard = (function () {
-    const board = ["X","X","X","X","X","X","X","X","X"];
+    const board = [];
     const display = () => {
         console.log(board);
     }
@@ -46,54 +46,81 @@ const player = function(type) {
 const game = (function() {
     const player1 = player("O");
     const player2 = player("X");
+    let turn = true;
 
-    const playing = (player) => {
-        const index = prompt(`Enter index for ${player.type}`);
+    const playing = (player,index) => {
         return gameBoard.set(player,index);
     }
 
-    const StartGame = function() {
+    const Play = function(index) {
         console.log("Starting game")
-        gameBoard.display()
-        let turn = true;
-        while(true) {
-            
-            if(turn){
-               if (playing(player1)) {
-                if(gameBoard.check(player1)) {break;}
+                  
+        if(turn){
+            if (playing(player1,index)) {
                 turn = !turn
-               }
             }
-
-            else {
-                if(playing(player2)) {
-                    if (gameBoard.check(player2)) {break;}
-                    turn = !turn;
-                }
+        }
+        else {
+            if(playing(player2,index)) {
+                turn = !turn;
             }
+        }
+        
+    }
 
-            gameBoard.display()
-            if(gameBoard.isFull()) {break;}
+    const gameWinner = () => {
+        if(gameBoard.check(player1)){
+            return player1;
+        }
+        else if(gameBoard.check(player2)){
+            return player2;
         }
     }
-    gameBoard.display()
-    return {StartGame}
+
+    const isOver = () => {
+        if(gameBoard.isFull() || gameBoard.check(player1) || gameBoard.check(player2)) {
+            return true;
+        }
+        return false;
+    }
+
+ 
+    const nowPlaying = () => {
+        if(turn) {return player1}
+        else return player2;
+    }
+    return {nowPlaying,Play,gameWinner,isOver}
 })();
 
 
 
 const dom = (function() {
     const cells = [];
+    const body = document.body;
+    const container = document.createElement('div');
+    container.classList.add("container");
+    const current = document.createElement('h1');
     const render = () => {
-        const container = document.createElement('div');
-        container.classList.add("container");
         for(let i=0;i<9;i++){
             const cell = document.createElement('div');
-            cell.classList.add(`cell-${i}`);
+            cell.classList.add("cell");
+            cell.dataset.index = i;
             container.append(cell);
             cells.push(cell);
+            cell.addEventListener('click', (e) => {
+                if(!game.isOver()) { 
+                    let index = parseInt(e.target.dataset.index);
+                    game.Play(index);
+                    display();
+                    const winner = game.gameWinner();
+                    if(winner !== undefined) {
+                        current.textContent = winner.type + " won !!!!";
+                    }
+                }else {
+                    current.textContent = "no more cell to fill"
+                }     
+            })
         }
-        const body = document.body;
         body.append(container)
     }
 
@@ -101,6 +128,9 @@ const dom = (function() {
         for(let i=0;i<9;i++){
             cells[i].textContent = gameBoard.board[i];
         }
+        current.textContent = game.nowPlaying().type;
+        console.log(current.textContent)
+        body.append(current)
     }
 
     return {render,display}

@@ -107,14 +107,15 @@ const dom = (function() {
     game.player1.name = playerOne;
     game.player2.name = playerTwo;
     const p1 = document.createElement("h1");
-    p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
+    p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
     const body = document.body;
     body.append(p1);
     const container = document.createElement('div');
     container.classList.add("container");
     const button = document.createElement("button");
-    body.append(button);
     button.textContent = "Restart";
+    body.append(button);
+    button.setAttribute("style","visibility : hidden")
     const current = document.createElement('h1');
     const render = () => {
         current.textContent  = game.nowPlaying().type;
@@ -134,25 +135,29 @@ const dom = (function() {
                     if(winner !== undefined) {
                         winner.win += 1;
                         current.textContent = winner.name + " won !!!!";
-                        p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
-                        restart();
+                        p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
+                        restart()
+
                     }
+
                     else if(gameBoard.isFull()){
                         current.textContent = "no cells";
-                        restart();
+                        restart()
+
                     }
-                }   
+                }
             })
         }
         body.append(container)
     }
 
     const restart = () => {
+        button.setAttribute("style","visibility :visible")
         button.setAttribute("style", "background-color:green")
         button.addEventListener("click",(e) => {
             gameBoard.resetBoard();
-            display()
             button.setAttribute("style", "background-color:grey")  
+            display()
         })
     }
 
@@ -161,7 +166,7 @@ const dom = (function() {
             cells[i].textContent = gameBoard.board[i];
         }
         current.textContent = game.nowPlaying().type;
-        p1.textContent = `${game.player1.name} : ${game.player1.win} || ${game.player2.name} : ${game.player2.win}`;
+        button.setAttribute("style","visibility :hidden")
     }
 
     render()

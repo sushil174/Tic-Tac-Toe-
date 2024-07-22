@@ -1,15 +1,43 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+body {
+    font-family: "Josefin Sans", sans-serif;
+    font-size: 1rem;
+}
 .container {
     display: grid;
-    grid-template-columns: repeat(3 ,1fr);
-    grid-template-rows: repeat(3,1fr);
-    gap: 3em;
-    width: clamp(500px, 60%, 80%);
-    border: 1px solid pink;
-    justify-items: center;
-    padding: 5em 2em;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    max-width: 10%;
+    max-height: 10%;
+    gap: 0px;
+    
 }
 
-.cell {
-    padding: 1em;
-    border: 1px solid red;
+
+
+.cell[data-index="3"],.cell[data-index="4"],.cell[data-index="5"] {
+    border-top:  5px solid red;
+    border-bottom: 5px solid red;
 }
+
+.cell[data-index="1"],.cell[data-index="4"],.cell[data-index="7"] {
+        border-left:  5px solid rebeccapurple;
+        border-right: 5px solid rebeccapurple;
+        
+    }
+
+.cell {
+
+    font-size: 2.5rem;
+    width: 3em;
+    height: 3em;
+    line-height:3em;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    
+}
+

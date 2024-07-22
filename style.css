@@ -91,15 +91,16 @@ button {
     font-style: normal;
     font-size: 2em;
     background-color:#a5b4fc;
-    color: #be185d;
+    color: #16a34a;
     justify-self: center;
-    border: 2px solid #be185d;
+    border: 3px solid #16a34a;
     padding:0 2em;
-    border-radius: 5px;
+    border-radius: 5px ;
+    
     
 }
 
 button:hover{
-    background-color:#be185d;
+    background-color:#16a34a;
     color: #a5b4fc;
 }

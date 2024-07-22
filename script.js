@@ -78,9 +78,11 @@ const game = (function() {
 
     const gameWinner = () => {
         if(gameBoard.check(player1)){
+            turn = !turn;
             return player1;
         }
         else if(gameBoard.check(player2)){
+            turn = !turn;
             return player2;
         }
     }
@@ -109,10 +111,18 @@ const dom = (function() {
     const playerTwo = prompt("Enter second name");
     game.player1.name = playerOne;
     game.player2.name = playerTwo;
-    const p1 = document.createElement("h1");
-    p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
-    const body = document.body;
+    const p1 = document.createElement("p");
+    p1.classList.add("player1")
+    const p2 = document.createElement("p");
+    p2.classList.add("player2")
+
+    p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win}`  
+    p2.textContent = `${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
+
+    const body = document.querySelector('.main');
     body.append(p1);
+    body.append(p2)
+
     const container = document.createElement('div');
     container.classList.add("container");
     const button = document.createElement("button");
@@ -123,6 +133,7 @@ const dom = (function() {
     const render = () => {
         current.textContent  = game.nowPlaying().type;
         body.append(current);
+
         for(let i=0;i<9;i++){
             const cell = document.createElement('div');
             cell.classList.add("cell");
@@ -150,14 +161,16 @@ const dom = (function() {
                 })
 
                 cell.addEventListener('click', (e) => {
+                    if(!game.isOver()){
                         let index = parseInt(e.target.dataset.index);
                         game.Play(index);
                         display();
                         const winner = game.gameWinner();
                         if(winner !== undefined) {
                             winner.win += 1;
-                            current.textContent = winner.name + " won !!!!";
-                            p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
+                            current.textContent = winner.name + " won !!!!";                           
+                            p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win}`  
+                            p2.textContent =  `${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
                             restart()
 
                         }
@@ -166,7 +179,9 @@ const dom = (function() {
                             current.textContent = "no cells";
                             restart()
 
-                        }   
+                        }
+                    }
+                           
                 })
             }
             
@@ -176,10 +191,8 @@ const dom = (function() {
     
     const restart = () => {
         button.setAttribute("style","visibility :visible")
-        button.setAttribute("style", "background-color:green")
         button.addEventListener("click",(e) => {
             gameBoard.resetBoard();
-            button.setAttribute("style", "background-color:grey")  
             display()
         })
     }

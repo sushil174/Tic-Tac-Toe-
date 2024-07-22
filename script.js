@@ -10,6 +10,12 @@ const gameBoard = (function () {
         }
         return false
     }
+    const alreadyOccupied = (index) => {
+        if(board[index] == undefined){
+            return true;
+        }
+        return false;
+    }
 
     const resetBoard = () => {
         board.length = 0;
@@ -38,7 +44,7 @@ const gameBoard = (function () {
         return true
     }
 
-    return {board,display,set,check,isFull,resetBoard}
+    return {board,display,set,check,isFull,resetBoard,alreadyOccupied}
 })();
 
 
@@ -54,19 +60,16 @@ const game = (function() {
     const player2 = player("player2","X",0);
     let turn = true;
 
-    const playing = (player,index) => {
-        return gameBoard.set(player,index);
-    }
 
     const Play = function(index) {
               
         if(turn){
-            if (playing(player1,index)) {
+            if (gameBoard.set(player1,index)) {
                 turn = !turn
             }
         }
         else {
-            if(playing(player2,index)) {
+            if(gameBoard.set(player2,index)) {
                 turn = !turn;
             }
         }
@@ -126,31 +129,51 @@ const dom = (function() {
             cell.dataset.index = i;
             container.append(cell);
             cells.push(cell);
-            cell.addEventListener('click', (e) => {
-                if(!game.isOver()) { 
-                    let index = parseInt(e.target.dataset.index);
-                    game.Play(index);
-                    display();
-                    const winner = game.gameWinner();
-                    if(winner !== undefined) {
-                        winner.win += 1;
-                        current.textContent = winner.name + " won !!!!";
-                        p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
-                        restart()
 
+          
+
+            if(!game.isOver()) { 
+
+                cell.addEventListener('mouseover', e => {
+                    if(!game.isOver()){
+                        if(gameBoard.alreadyOccupied(parseInt(e.target.dataset.index))){
+                            e.target.textContent = game.nowPlaying().type;
+                        }
                     }
-
-                    else if(gameBoard.isFull()){
-                        current.textContent = "no cells";
-                        restart()
-
+                    
+                })
+    
+                cell.addEventListener('mouseleave', (e) => {
+                    if(!game.isOver()){
+                        display()
                     }
-                }
-            })
+                })
+
+                cell.addEventListener('click', (e) => {
+                        let index = parseInt(e.target.dataset.index);
+                        game.Play(index);
+                        display();
+                        const winner = game.gameWinner();
+                        if(winner !== undefined) {
+                            winner.win += 1;
+                            current.textContent = winner.name + " won !!!!";
+                            p1.textContent = `${game.player1.name} (${game.player1.type}) : ${game.player1.win} || ${game.player2.name} (${game.player2.type}) : ${game.player2.win}`;
+                            restart()
+
+                        }
+
+                        else if(gameBoard.isFull()){
+                            current.textContent = "no cells";
+                            restart()
+
+                        }   
+                })
+            }
+            
         }
         body.append(container)
     }
-
+    
     const restart = () => {
         button.setAttribute("style","visibility :visible")
         button.setAttribute("style", "background-color:green")

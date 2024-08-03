@@ -107,8 +107,8 @@ const game = (function() {
 
 const dom = (function() {
     let cells = [];
-    const playerOne = prompt("Enter first name");
-    const playerTwo = prompt("Enter second name");
+    const playerOne = prompt("Enter first name", "player-1");
+    const playerTwo = prompt("Enter second name","player-2");
     game.player1.name = playerOne;
     game.player2.name = playerTwo;
     const p1 = document.createElement("p");
